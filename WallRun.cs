@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class WallRunTutorial : MonoBehaviour
 {
-    /// <summary>
-    /// Wall run Tutorial stuff, scroll down for full movement
-    /// </summary>
+  
 
     //Wallrunning
     public LayerMask whatIsWall;
@@ -15,7 +13,7 @@ public class WallRunTutorial : MonoBehaviour
     bool isWallRunning;
     public float maxWallRunCameraTilt, wallRunCameraTilt;
 
-    private void WallRunInput() //make sure to call in void Update
+    private void WallRunInput() 
     {
         //Wallrun
         if (Input.GetKey(KeyCode.D) && isWallRight) StartWallrun();
@@ -31,7 +29,7 @@ public class WallRunTutorial : MonoBehaviour
         {
             rb.AddForce(orientation.forward * wallrunForce * Time.deltaTime);
 
-            //Make sure char sticks to wall
+            
             if (isWallRight)
                 rb.AddForce(orientation.right * wallrunForce / 5 * Time.deltaTime);
             else
@@ -43,7 +41,7 @@ public class WallRunTutorial : MonoBehaviour
         isWallRunning = false;
         rb.useGravity = true;
     }
-    private void CheckForWall() //make sure to call in void Update
+    private void CheckForWall() 
     {
         isWallRight = Physics.Raycast(transform.position, orientation.right, 1f, whatIsWall);
         isWallLeft = Physics.Raycast(transform.position, -orientation.right, 1f, whatIsWall);
@@ -55,9 +53,7 @@ public class WallRunTutorial : MonoBehaviour
     }
 
 
-    /// <summary>
-    /// Wall run done, here comes the rest of the movement script
-    /// </summary>
+   
 
 
     //Assingables
@@ -166,9 +162,7 @@ public class WallRunTutorial : MonoBehaviour
         WallRunInput();
     }
 
-    /// <summary>
-    /// Find user input. Should put this in its own class but im lazy
-    /// </summary>
+    
     private void MyInput()
     {
         x = Input.GetAxisRaw("Horizontal");
@@ -242,8 +236,7 @@ public class WallRunTutorial : MonoBehaviour
 
     private void Movement()
     {
-        //Extra gravity
-        //Needed that the Ground Check works better!
+        
         float gravityMultiplier = 10f;
 
         if (crouching) gravityMultiplier = crouchGravityMultiplier;
@@ -271,14 +264,14 @@ public class WallRunTutorial : MonoBehaviour
         //Set max speed
         float maxSpeed = this.maxSpeed;
 
-        //If sliding down a ramp, add force down so player stays grounded and also builds speed
+        
         if (crouching && grounded && readyToJump)
         {
             rb.AddForce(Vector3.down * Time.deltaTime * 3000);
             return;
         }
 
-        //If speed is larger than maxspeed, cancel out the input so you don't go over max speed
+        
         if (x > 0 && xMag > maxSpeed) x = 0;
         if (x < 0 && xMag < -maxSpeed) x = 0;
         if (y > 0 && yMag > maxSpeed) y = 0;
@@ -312,7 +305,7 @@ public class WallRunTutorial : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce * 1.5f);
             rb.AddForce(normalVector * jumpForce * 0.5f);
 
-            //If jumping while falling, reset y velocity.
+            
             Vector3 vel = rb.velocity;
             if (rb.velocity.y < 0.5f)
                 rb.velocity = new Vector3(vel.x, 0, vel.z);
@@ -333,7 +326,7 @@ public class WallRunTutorial : MonoBehaviour
             //Reset Velocity
             rb.velocity = Vector3.zero;
 
-            //Disable dashForceCounter if doublejumping while dashing
+            
             allowDashForceCounter = false;
 
             Invoke(nameof(ResetJump), jumpCooldown);
@@ -359,7 +352,7 @@ public class WallRunTutorial : MonoBehaviour
             //Always add forward force
             rb.AddForce(orientation.forward * jumpForce * 1f);
 
-            //Disable dashForceCounter if doublejumping while dashing
+            
             allowDashForceCounter = false;
 
             Invoke(nameof(ResetJump), jumpCooldown);
@@ -402,7 +395,7 @@ public class WallRunTutorial : MonoBehaviour
     }
     private void SonicSpeed()
     {
-        //If running builds up speed
+       
         if (grounded && y >= 0.99f)
         {
             timePassedSonic += Time.deltaTime;
@@ -476,14 +469,7 @@ public class WallRunTutorial : MonoBehaviour
 
         rocketActive = true;
 
-        //Disable dashForceCounter if doublejumping while dashing
         allowDashForceCounter = false;
-
-        /*Boost all Forces
-        Vector3 vel = velocityToBoost;
-        Vector3 velBoosted = vel * rocketBoostMultiplier;
-        rb.velocity = velBoosted;
-        */
 
         //Boost forwards and upwards
         rb.AddForce(orientation.forward * rocketForce * Time.deltaTime * 1f);
@@ -511,12 +497,12 @@ public class WallRunTutorial : MonoBehaviour
     }
     private void Climb()
     {
-        //Makes possible to climb even when falling down fast
+        
         Vector3 vel = rb.velocity;
         if (rb.velocity.y < 0.5f && !alreadyStoppedAtLadder)
         {
             rb.velocity = new Vector3(vel.x, 0, vel.z);
-            //Make sure char get's at wall
+            
             alreadyStoppedAtLadder = true;
             rb.AddForce(orientation.forward * 500 * Time.deltaTime);
         }
@@ -525,7 +511,7 @@ public class WallRunTutorial : MonoBehaviour
         if (rb.velocity.magnitude < maxClimbSpeed)
             rb.AddForce(orientation.up * climbForce * Time.deltaTime);
 
-        //Doesn't Push into the wall
+        
         if (!Input.GetKey(KeyCode.S)) y = 0;
     }
 
@@ -535,11 +521,10 @@ public class WallRunTutorial : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
         float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
 
-        //Find current look rotation
+        
         Vector3 rot = playerCam.transform.localRotation.eulerAngles;
         desiredX = rot.y + mouseX;
 
-        //Rotate, and also make sure we dont over- or under-rotate.
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
@@ -548,7 +533,7 @@ public class WallRunTutorial : MonoBehaviour
         orientation.transform.localRotation = Quaternion.Euler(0, desiredX, 0);
 
         //While Wallrunning
-        //Tilts camera in .5 second
+       
         if (Math.Abs(wallRunCameraTilt) < maxWallRunCameraTilt && isWallRunning && isWallRight)
             wallRunCameraTilt += Time.deltaTime * maxWallRunCameraTilt * 2;
         if (Math.Abs(wallRunCameraTilt) < maxWallRunCameraTilt && isWallRunning && isWallLeft)
@@ -581,7 +566,6 @@ public class WallRunTutorial : MonoBehaviour
             rb.AddForce(moveSpeed * orientation.transform.forward * Time.deltaTime * -mag.y * counterMovement);
         }
 
-        //Limit diagonal running. This will also cause a full stop if sliding fast and un-crouching, so not optimal.
         if (Mathf.Sqrt((Mathf.Pow(rb.velocity.x, 2) + Mathf.Pow(rb.velocity.z, 2))) > maxSpeed)
         {
             float fallspeed = rb.velocity.y;
@@ -590,10 +574,7 @@ public class WallRunTutorial : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Find the velocity relative to where the player is looking
-    /// Useful for vectors calculations regarding movement and limiting movement
-    /// </summary>
+  
     public Vector2 FindVelRelativeToLook()
     {
         float lookAngle = orientation.transform.eulerAngles.y;
@@ -617,12 +598,10 @@ public class WallRunTutorial : MonoBehaviour
 
     private bool cancellingGrounded;
 
-    /// <summary>
-    /// Handle ground detection
-    /// </summary>
+   
     private void OnCollisionStay(Collision other)
     {
-        //Make sure we are only checking for walkable layers
+        
         int layer = other.gameObject.layer;
         if (whatIsGround != (whatIsGround | (1 << layer))) return;
 
@@ -640,7 +619,7 @@ public class WallRunTutorial : MonoBehaviour
             }
         }
 
-        //Invoke ground/wall cancel, since we can't check normals with CollisionExit
+    
         float delay = 3f;
         if (!cancellingGrounded)
         {
